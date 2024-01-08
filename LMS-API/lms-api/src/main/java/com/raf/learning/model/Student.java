@@ -77,5 +77,26 @@ public class Student {
     public void setIndexNumber(Integer indexNumber) {
         this.indexNumber = indexNumber;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{\"id\" :");
+        builder.append(id);
+        builder.append(", \"firstName\" :");
+        builder.append("\"").append(firstName).append("\"");
+        builder.append(", \"lastName\" :");
+        builder.append("\"").append(lastName).append("\"");
+        builder.append(", \"startYear\" :");
+        builder.append("\"").append(startYear).append("\"");
+        builder.append(", \"studyProgram\" :");
+        builder.append("\"").append(studyProgram).append("\"");
+        builder.append(", \"indexNumber\" :");
+        builder.append("\"").append(indexNumber).append("\"");
+        builder.append("}");
+        return builder.toString();
+    }
+
 }
+
 
