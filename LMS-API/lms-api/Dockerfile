@@ -6,7 +6,7 @@ VOLUME /tmp
 COPY build/libs/*.jar app.jar
 
 # Expose the application port
-EXPOSE 8090
+EXPOSE 8091
 
 # Run the App
 ENTRYPOINT ["java","-jar","/app.jar"]
