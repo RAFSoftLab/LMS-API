@@ -3,34 +3,49 @@ package com.raf.learning.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Student {
     @Id
-    private Integer id;
+    private String id;
     private String firstName;
     private String lastName;
-    private String startYear;
-    private String studyProgram;
     private Integer indexNumber;
+    private String startYear;
+    private String studiesGroup;
+    private String taskGroup;
+    private boolean taskCloned;
+    private LocalDateTime taskClonedTime;
+    private boolean taskSubmitted;
+    private LocalDateTime taskSubmittedTime;
+    private String major;
+    private String studyProgram;
+    private String classroom;
+    private String forkName;
 
     public Student() {
     }
 
-    public Student(Integer id,
-                   String firstName,
-                   String lastName,
-                   String startYear,
-                   String studyProgram,
-                   Integer indexNumber) {
-        this.id = id;
+    public Student(
+            String firstName,
+            String lastName,
+            Integer indexNumber,
+            String startYear,
+            String studiesGroup,
+            String major,
+            String studyProgram) {
+        this.id = studyProgram+major+indexNumber+startYear;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.startYear = startYear;
-        this.studyProgram = studyProgram;
         this.indexNumber = indexNumber;
+        this.startYear = startYear;
+        this.studiesGroup = studiesGroup;
+        this.major = major;
+        this.studyProgram = studyProgram;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -54,7 +69,7 @@ public class Student {
         return indexNumber;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -78,25 +93,113 @@ public class Student {
         this.indexNumber = indexNumber;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\"id\" :");
-        builder.append(id);
-        builder.append(", \"firstName\" :");
-        builder.append("\"").append(firstName).append("\"");
-        builder.append(", \"lastName\" :");
-        builder.append("\"").append(lastName).append("\"");
-        builder.append(", \"startYear\" :");
-        builder.append("\"").append(startYear).append("\"");
-        builder.append(", \"studyProgram\" :");
-        builder.append("\"").append(studyProgram).append("\"");
-        builder.append(", \"indexNumber\" :");
-        builder.append("\"").append(indexNumber).append("\"");
-        builder.append("}");
-        return builder.toString();
+    public String getStudiesGroup() {
+        return studiesGroup;
     }
 
+    public void setStudiesGroup(String studiesGroup) {
+        this.studiesGroup = studiesGroup;
+    }
+
+    public String getTaskGroup() {
+        return taskGroup;
+    }
+
+    public void setTaskGroup(String taskGroup) {
+        this.taskGroup = taskGroup;
+    }
+
+    public boolean isTaskCloned() {
+        return taskCloned;
+    }
+
+    public void setTaskCloned(boolean taskCloned) {
+        this.taskCloned = taskCloned;
+    }
+
+    public LocalDateTime getTaskClonedTime() {
+        return taskClonedTime;
+    }
+
+    public void setTaskClonedTime(LocalDateTime taskClonedTime) {
+        this.taskClonedTime = taskClonedTime;
+    }
+
+    public boolean isTaskSubmitted() {
+        return taskSubmitted;
+    }
+
+    public void setTaskSubmitted(boolean taskSubmitted) {
+        this.taskSubmitted = taskSubmitted;
+    }
+
+    public LocalDateTime getTaskSubmittedTime() {
+        return taskSubmittedTime;
+    }
+
+    public void setTaskSubmittedTime(LocalDateTime taskSubmittedTime) {
+        this.taskSubmittedTime = taskSubmittedTime;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getClassroom() {
+        return classroom;
+    }
+
+    public void setClassroom(String classroom) {
+        this.classroom = classroom;
+    }
+
+    public String getForkName() {
+        return forkName;
+    }
+
+    public void setForkName(String forkName) {
+        this.forkName = forkName;
+    }
+
+    @Override
+    public String toString() {
+        String builder = "{\"id\" :" +
+                "\"" + id + "\"" +
+                ", \"firstName\" :" +
+                "\"" + firstName + "\"" +
+                ", \"lastName\" :" +
+                "\"" + lastName + "\"" +
+                ", \"indexNumber\" :" +
+                "\"" + indexNumber + "\"" +
+                ", \"startYear\" :" +
+                "\"" + startYear + "\"" +
+                ", \"studiesGroup\" :" +
+                "\"" + studiesGroup + "\"" +
+                ", \"taskGroup\" :" +
+                "\"" + taskGroup + "\"" +
+                ", \"taskCloned\" :" +
+                "\"" + taskCloned + "\"" +
+                ", \"taskClonedTime\" :" +
+                "\"" + taskClonedTime + "\"" +
+                ", \"taskSubmitted\" :" +
+                "\"" + taskSubmitted + "\"" +
+                ", \"taskSubmittedTime\" :" +
+                "\"" + taskSubmittedTime + "\"" +
+                ", \"major\" :" +
+                "\"" + major + "\"" +
+                ", \"studyProgram\" :" +
+                "\"" + studyProgram + "\"" +
+                ", \"classroom\" :" +
+                "\"" + classroom + "\"" +
+                ", \"forkName\" :" +
+                "\"" + forkName + "\"" +
+                "}";
+        return builder;
+    }
 }
 
 
