@@ -7,8 +7,8 @@ Pretpostavke
 Proverite da li imate instalirane sledeće softvere:
 
 Docker (verzija >= 20.0)\
-Docker Compose (verzija >= 1.27)\
-Java Development Kit (JDK) 11 ili novije
+Docker Compose (verzija >= 2.21.0)\
+Java Development Kit (JDK) 17 ili novije
 
 Početak rada
 
@@ -19,16 +19,11 @@ git clone https://github.com/your/repo.git
 cd your-repo
 ```
 
-2. Izgradite Docker kontejnere:
+2. Izgradite Docker kontejnere i pokrenite ih:
 
 ```
-docker-compose up --build -d
-```
-
-3. Pokrenite Docker kontejnere:
-
-```
-docker-compose up --build -d
+docker-compose build --no-cache
+docker-compose up --force-recreate
 ```
 
 Sačekajte da se kontejneri pokrenu. Kada su spremni, API bi trebalo da bude dostupan na http://localhost:8091.
