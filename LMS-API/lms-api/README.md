@@ -24,6 +24,8 @@ docker-compose build --no-cache
 docker-compose up --force-recreate  
 ```
 
+Docker compose ce automatski preuzeti i pokrenuti najnoviju verziju oficijalnog postgres kontejnera
+
 Sačekajte da se kontejneri pokrenu. Kada su spremni, API bi trebalo da bude dostupan na http://localhost:8091.
 
 API Endpoint-ovi
