@@ -13,15 +13,17 @@ Java Development Kit (JDK) 17 ili novije
 Početak rada
 
 1. Klonirajte repozitorijum:
+
 ```
 git clone https://github.com/your/repo.git
 cd your-repo
 ```
 
 2. Izgradite Docker kontejnere i pokrenite ih:
+
 ```
-docker-compose build --no-cache  
-docker-compose up --force-recreate  
+docker-compose build --no-cache
+docker-compose up --force-recreate
 ```
 
 Docker compose ce automatski preuzeti i pokrenuti najnoviju verziju oficijalnog postgres kontejnera
@@ -38,11 +40,12 @@ Kreiraj Studenta:\
 URL: http://localhost:8091/api/v1/students \
 Metoda: POST \
 Zahtevno telo:
+
 ```
 {
-    "firstName": "Luka",
-    "lastName": "Devic",
-    "indexNumber": "31",
+    "firstName": "Foo",
+    "lastName": "Bar",
+    "indexNumber": "100",
     "startYear": "2024",
     "studiesGroup": "120",
     "major": "SI",
@@ -62,6 +65,7 @@ Studentov zadatak je kloniran: \
 URL: http://localhost:8091/api/v1/students/{id}/task_cloned \
 Metoda: POST \
 Zahtevno telo:
+
 ```
 {
     "taskGroup": "21",
@@ -74,6 +78,7 @@ Studentov zadatak je predat:
 URL: http://localhost:8091/api/v1/students/{id}/task_cloned
 Metoda: POST
 Zahtevno telo:
+
 ```
 {
     "taskGroup": "21",
@@ -82,6 +87,7 @@ Zahtevno telo:
 ```
 
 Model Studenta
+
 ```
 {
     "id": "MSI1002024",

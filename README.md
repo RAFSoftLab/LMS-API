@@ -43,9 +43,9 @@ Zahtevno telo:
 
 ```
 {
-    "firstName": "Luka",
-    "lastName": "Devic",
-    "indexNumber": "31",
+    "firstName": "Foo",
+    "lastName": "Bar",
+    "indexNumber": "100",
     "startYear": "2024",
     "studiesGroup": "120",
     "major": "SI",
