@@ -1,11 +1,13 @@
 package com.raf.learning.controller;
 
+import com.google.gson.Gson;
 import com.raf.learning.model.ExamInfo;
 import com.raf.learning.model.Student;
 import com.raf.learning.model.TaskSubmissionInfo;
 import com.raf.learning.repository.StudentRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -27,21 +29,17 @@ public class StudentController {
     @GetMapping("/{id}")
     public String getStudent(@PathVariable String id){
         return repository.findById(id).isPresent()
-                ? repository.findById(id).get().toString()
+                ? new Gson().toJson(repository.findById(id).get())
                 : String.format("Student with id: %s doesn't exist in the db", id);
     }
 
     @PostMapping
     public String createStudent(@RequestBody Student newStudent) {
-//        if(newStudent.getId() == null) {
-//            return "Provided input doesn't contain id, please add id to your request json";
-//        }
         newStudent.setId(
                 newStudent.getStudyProgram()
-                        +newStudent.getMajor()
                         +newStudent.getIndexNumber()
                         +newStudent.getStartYear());
-        return repository.save(newStudent).toString();
+        return new Gson().toJson(repository.save(newStudent));
     }
 
     @PostMapping("/{id}/task_cloned")
@@ -52,11 +50,12 @@ public class StudentController {
         }
         var dbStudent = result.get();
         dbStudent.setTaskCloned(true);
-        dbStudent.setTaskClonedTime(LocalDateTime.now(ZoneId.of("CET")));
+        var ldt = LocalDateTime.now(ZoneId.of("CET"));
+        dbStudent.setTaskClonedTime(Timestamp.valueOf(ldt));
         dbStudent.setTaskGroup(examInfo.getTaskGroup());
         dbStudent.setClassroom(examInfo.getClassroom());
 
-        return repository.save(dbStudent).toString();
+        return new Gson().toJson(repository.save(dbStudent));
     }
 
     @PostMapping("/{id}/task_submitted")
@@ -67,10 +66,11 @@ public class StudentController {
         }
         var dbStudent = result.get();
         dbStudent.setTaskSubmitted(true);
-        dbStudent.setTaskSubmittedTime(LocalDateTime.now(ZoneId.of("CET")));
+        var ldt = LocalDateTime.now(ZoneId.of("CET"));
+        dbStudent.setTaskSubmittedTime(Timestamp.valueOf(ldt));
         dbStudent.setForkName(taskSubmissionInfo.getForkName());
 
-        return repository.save(dbStudent).toString();
+        return new Gson().toJson(repository.save(dbStudent));
     }
 
     @DeleteMapping("/{id}")

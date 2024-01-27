@@ -3,7 +3,7 @@ package com.raf.learning.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 public class Student {
@@ -16,10 +16,9 @@ public class Student {
     private String studiesGroup;
     private String taskGroup;
     private boolean taskCloned;
-    private LocalDateTime taskClonedTime;
+    private Timestamp taskClonedTime;
     private boolean taskSubmitted;
-    private LocalDateTime taskSubmittedTime;
-    private String major;
+    private Timestamp taskSubmittedTime;
     private String studyProgram;
     private String classroom;
     private String forkName;
@@ -41,7 +40,6 @@ public class Student {
         this.indexNumber = indexNumber;
         this.startYear = startYear;
         this.studiesGroup = studiesGroup;
-        this.major = major;
         this.studyProgram = studyProgram;
     }
 
@@ -117,11 +115,11 @@ public class Student {
         this.taskCloned = taskCloned;
     }
 
-    public LocalDateTime getTaskClonedTime() {
+    public Timestamp getTaskClonedTime() {
         return taskClonedTime;
     }
 
-    public void setTaskClonedTime(LocalDateTime taskClonedTime) {
+    public void setTaskClonedTime(Timestamp taskClonedTime) {
         this.taskClonedTime = taskClonedTime;
     }
 
@@ -133,20 +131,12 @@ public class Student {
         this.taskSubmitted = taskSubmitted;
     }
 
-    public LocalDateTime getTaskSubmittedTime() {
+    public Timestamp getTaskSubmittedTime() {
         return taskSubmittedTime;
     }
 
-    public void setTaskSubmittedTime(LocalDateTime taskSubmittedTime) {
+    public void setTaskSubmittedTime(Timestamp taskSubmittedTime) {
         this.taskSubmittedTime = taskSubmittedTime;
-    }
-
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
     }
 
     public String getClassroom() {
@@ -163,42 +153,6 @@ public class Student {
 
     public void setForkName(String forkName) {
         this.forkName = forkName;
-    }
-
-    @Override
-    public String toString() {
-        String builder = "{\"id\" :" +
-                "\"" + id + "\"" +
-                ", \"firstName\" :" +
-                "\"" + firstName + "\"" +
-                ", \"lastName\" :" +
-                "\"" + lastName + "\"" +
-                ", \"indexNumber\" :" +
-                "\"" + indexNumber + "\"" +
-                ", \"startYear\" :" +
-                "\"" + startYear + "\"" +
-                ", \"studiesGroup\" :" +
-                "\"" + studiesGroup + "\"" +
-                ", \"taskGroup\" :" +
-                "\"" + taskGroup + "\"" +
-                ", \"taskCloned\" :" +
-                "\"" + taskCloned + "\"" +
-                ", \"taskClonedTime\" :" +
-                "\"" + taskClonedTime + "\"" +
-                ", \"taskSubmitted\" :" +
-                "\"" + taskSubmitted + "\"" +
-                ", \"taskSubmittedTime\" :" +
-                "\"" + taskSubmittedTime + "\"" +
-                ", \"major\" :" +
-                "\"" + major + "\"" +
-                ", \"studyProgram\" :" +
-                "\"" + studyProgram + "\"" +
-                ", \"classroom\" :" +
-                "\"" + classroom + "\"" +
-                ", \"forkName\" :" +
-                "\"" + forkName + "\"" +
-                "}";
-        return builder;
     }
 }
 
