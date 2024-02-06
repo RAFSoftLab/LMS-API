@@ -22,6 +22,7 @@ cd your-repo
 2. Izgradite Docker kontejnere i pokrenite ih:
 
 ```
+./gradlew bootJar   
 docker-compose build --no-cache
 docker-compose up --force-recreate
 ```
