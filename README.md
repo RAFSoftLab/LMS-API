@@ -10,6 +10,46 @@ Docker (verzija >= 20.0)\
 Docker Compose (verzija >= 2.21.0)\
 Java Development Kit (JDK) 17 ili novije
 
+Proverite da imate sledecu konfiguraciju unutar application.properties:
+
+```
+spring.datasource.url=jdbc:postgresql://172.21.0.2:5432/mydatabase
+```
+
+Napomena 1: postgressql container mozda na vasoj masini nece biti pokrenut na adresi 172.21.0.2, proverite na kojoj
+adresi je pokrenut kontejner koristeci sledece komande nakon sto je kontejner pokrenut
+
+Da biste izlistali pokrenute kontejnere
+
+```
+docker ps
+```
+
+Pornadjite CONTAINER ID vaseg kontejnera i pokrenite sledecu komandu
+
+```
+docker inspect <ID VASEG KONEJNERA>
+```
+
+Na dnu konfiguracije potrazite vrednost polja "IPAddress", izgledace otprilike ovako
+
+
+```
+"IPAddress": "172.21.0.2",
+```
+
+Dodajte pronadjenu adresu u application.properties:
+
+```
+spring.datasource.url=jdbc:postgresql://<IP ADRESA NA KOJOJ JE POKRENUT POSTGRESQL KONTEJNER>:5432/mydatabase
+```
+
+Napomena 2: Kada zelite da napravite docker image za produkciju, potrebno je da gornju konfiguraciju promenite u sledecu:
+
+```
+spring.datasource.url=jdbc:postgresql://172.19.0.2:5432/mydatabase
+```
+
 Početak rada
 
 1. Klonirajte repozitorijum:
