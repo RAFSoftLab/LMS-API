@@ -92,6 +92,8 @@ Metoda: POST \
 Zahtevno telo: CSV Fajl
 
 Postmen primer:
+![image](https://github.com/RAFSoftLab/LMS-API/assets/43738975/51bfabbe-190f-43bd-8c10-f451135ee333)
+
 
 Model Studenta
 
