@@ -86,6 +86,13 @@ Zahtevno telo:
 }
 ```
 
+Otpremi Studente:\
+URL: http://localhost:8091/api/v1/students/upload \
+Metoda: POST \
+Zahtevno telo: CSV Fajl
+
+Postmen primer:
+
 Model Studenta
 
 ```
