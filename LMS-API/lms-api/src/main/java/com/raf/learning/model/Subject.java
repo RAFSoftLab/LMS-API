@@ -1,8 +1,6 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.Entity;
-
-@Entity
+//@Entity
 public class Subject {
 
     private String fullName; // Objektno orijentisano programiranje

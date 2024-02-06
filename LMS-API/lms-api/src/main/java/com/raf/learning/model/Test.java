@@ -1,6 +1,5 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -8,7 +7,7 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Test {
 
     private LocalDate testDate;

@@ -1,9 +1,8 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
-@Entity
+//@Entity
 public class StudentSubmission {
 
     @ManyToOne

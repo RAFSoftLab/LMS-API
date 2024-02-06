@@ -1,11 +1,9 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.Entity;
-
 import java.time.LocalTime;
 
 
-@Entity
+//@Entity
 public class TestPeriod {
 
     private LocalTime start;
