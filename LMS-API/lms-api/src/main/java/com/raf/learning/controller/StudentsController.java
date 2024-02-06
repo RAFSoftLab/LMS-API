@@ -2,10 +2,16 @@ package com.raf.learning.controller;
 
 import com.google.gson.Gson;
 import com.raf.learning.model.ExamInfo;
+import com.raf.learning.model.ResponseMessage;
 import com.raf.learning.model.Student;
 import com.raf.learning.model.TaskSubmissionInfo;
 import com.raf.learning.repository.StudentRepository;
+import com.raf.learning.helpers.CSVHelper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.raf.learning.service.CSVService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -14,11 +20,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
-public class StudentController {
+public class StudentsController {
     private final StudentRepository repository;
+    private final CSVService fileService;
 
-    public StudentController(StudentRepository repository) {
+    public StudentsController(StudentRepository repository,
+                              CSVService fileService) {
         this.repository = repository;
+        this.fileService = fileService;
     }
 
     @GetMapping
@@ -80,5 +89,25 @@ public class StudentController {
       }
       repository.deleteById(id);
       return String.format("Student with id: %s has been successfully deleted", id);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ResponseMessage> uploadStudents(@RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        if (CSVHelper.hasCSVFormat(file)) {
+            try {
+                fileService.saveStudents(file);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                message = "Could not upload file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+            }
+        }
+
+        message = "Please upload a csv file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
 }

@@ -26,7 +26,6 @@ public class StudentsE2ETests {
             result = response.body();
             System.out.println("### response: \n" + result);
             assertThat(response.statusCode(), is(equalTo(200)));
-
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
