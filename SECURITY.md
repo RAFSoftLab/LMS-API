@@ -192,11 +192,10 @@ za smanjenje opterećenja servera i konfigurišite odgovarajuće postavke timeou
 
 Rizik: Ranjivosti u zavisnostima trećih strana mogu ugroziti sigurnost aplikacije.
 
+Mere zaštite: Redovno ažurirajte zavisnosti na njihove najnovije sigurne verzije. 
+Koristite alate poput OWASP Dependency-Check kako biste identifikovali i otklonili poznate ranjivosti.
+
 
 ## Predlog tokenizacije
 
 ![image](https://github.com/RAFSoftLab/LMS-API/assets/43738975/a83a28af-393a-4ba2-8778-cbd233aaed6c)
-
-
-Mere zaštite: Redovno ažurirajte zavisnosti na njihove najnovije sigurne verzije. 
-Koristite alate poput OWASP Dependency-Check kako biste identifikovali i otklonili poznate ranjivosti.
