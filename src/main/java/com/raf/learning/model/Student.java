@@ -23,6 +23,8 @@ public class Student {
     private String classroom;
     private String forkName;
 
+    private String token;
+
     public Student() {
     }
 
@@ -161,6 +163,14 @@ public class Student {
 
     public void setForkName(String forkName) {
         this.forkName = forkName;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
 
