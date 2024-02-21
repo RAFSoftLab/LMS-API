@@ -2,9 +2,11 @@ package com.raf.learning.authorisation;
 
 import com.raf.learning.model.Token;
 import com.raf.learning.repository.TokensRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class TokenManager {
     private final TokensRepository tokensRepository;
 

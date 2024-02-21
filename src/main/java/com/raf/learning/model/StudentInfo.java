@@ -1,11 +1,12 @@
 package com.raf.learning.model;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
 import java.util.List;
 
-//@Entity
+@Entity
 public class StudentInfo {
 
     @Id

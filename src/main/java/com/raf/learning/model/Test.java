@@ -1,14 +1,14 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-//@Entity
+@Entity
 public class Test {
+    @Id
+    private Long id;
 
     private LocalDate testDate;
 
@@ -26,6 +26,15 @@ public class Test {
 
     @ManyToMany
     private List<StudentInfo> studentsAssigned;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 
     public LocalDate getTestDate() {
         return testDate;

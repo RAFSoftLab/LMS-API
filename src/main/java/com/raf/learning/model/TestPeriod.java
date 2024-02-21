@@ -1,27 +1,40 @@
 package com.raf.learning.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.time.LocalTime;
 
 
-//@Entity
+@Entity
 public class TestPeriod {
 
-    private LocalTime start;
-    private LocalTime end;
+    @Id
+    private Long id;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    public LocalTime getStart() {
-        return start;
+    public Long getId() {
+        return id;
     }
 
-    public void setStart(LocalTime start) {
-        this.start = start;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public LocalTime getEnd() {
-        return end;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setEnd(LocalTime end) {
-        this.end = end;
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
     }
 }

@@ -2,7 +2,10 @@ package com.raf.learning.service;
 
 import com.raf.learning.model.GitRepository;
 import com.raf.learning.repository.GitRepositoriesRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GitRepositoriesService {
     public GitRepositoriesService(GitRepositoriesRepository repository) {
         this.repository = repository;

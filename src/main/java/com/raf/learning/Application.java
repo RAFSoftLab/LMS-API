@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 //@ComponentScan("com.raf.learning.repository")
 @ComponentScan("com.raf.learning.controller")
 @ComponentScan("com.raf.learning.service")
+@ComponentScan("com.raf.learning.authorisation")
 //@ComponentScan("com.raf.learning.model")
 //@ComponentScan({"com.raf.learning.students"})
 @EntityScan("com.raf.learning.model")

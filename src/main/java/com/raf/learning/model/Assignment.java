@@ -1,9 +1,14 @@
 package com.raf.learning.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
-//@Entity
+@Entity
 public class Assignment {
+
+    @Id
+    private Long id;
 
     @ManyToOne
     private TestPeriod testPeriod; // termin u kom se radi zadatak 9-12 na primer
@@ -16,6 +21,14 @@ public class Assignment {
     private Test test;
 
     private int maxPoints;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public TestPeriod getTestPeriod() {
         return testPeriod;
