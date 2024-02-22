@@ -187,6 +187,7 @@ Metoda: POST\
 Opis: Uploaduje CSV fajl koji sadrži informacije o studentima.\
 Telo zahteva: CSV Fajl koji ukljucuje nazive kolona \
 Odgovor: Poruka o uspehu.\
+Napomena: Potrebno je da CSV Fajl sadrzi sledece zaglavlja: "Id", "Ime", "Prezime"
 
 Postmen primer:
 ![image](https://github.com/RAFSoftLab/LMS-API/assets/43738975/51bfabbe-190f-43bd-8c10-f451135ee333)
