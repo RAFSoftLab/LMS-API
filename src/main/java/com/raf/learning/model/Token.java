@@ -9,6 +9,9 @@ public class Token {
     private String id;
     private String value;
 
+    public Token() {
+    }
+
     public Token(String id, String value) {
         this.id = id;
         this.value = value;

@@ -10,6 +10,9 @@ public class GitRepository {
 
     private String url;
 
+    public GitRepository() {
+    }
+
     public GitRepository(String id, String url) {
         this.id = id;
         this.url = url;

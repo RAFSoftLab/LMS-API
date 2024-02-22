@@ -55,7 +55,7 @@ public class StudentsController {
         }
 
         var student = result.get();
-        if (!student.getToken().isEmpty()) {
+        if (student.getToken() != null) {
             var message = String.format("Student with id: %s is already authorized," +
                     " please use previously provided token", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
@@ -101,7 +101,7 @@ public class StudentsController {
         ));
     }
 
-    @GetMapping("/{id}/repository/{token}/{exam}")
+    @GetMapping("/{id}/repository/{token}/exam/{exam}")
     public ResponseEntity<ResponseMessage> getRepository(@PathVariable String id,
                                                          @PathVariable String token,
                                                          @PathVariable String exam) {
@@ -115,7 +115,7 @@ public class StudentsController {
         ));
     }
 
-    @GetMapping("/{id}/repository/{token}")
+    @GetMapping("/{id}/repository/{token}/fork")
     public ResponseEntity<ResponseMessage> getFork(@PathVariable String id,
                                                      @PathVariable String token) {
         var tokenIsValid = tokenManager.verifyToken(id, token);
