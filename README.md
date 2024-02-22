@@ -1,8 +1,8 @@
-Uvod
+## Uvod
 
 Ovo je open source API razvijen u Java Spring-u, pružajući endpoint-ove za upravljanje informacijama o studentima. API je kontejnerizovan pomoću Dockera, a baza podataka (PostgreSQL) takođe je kontejnerizovana. Celokupno postavljanje može se lako implementirati korišćenjem Docker Compose alata.
 
-Pretpostavke
+### Pretpostavke
 
 Proverite da li imate instalirane sledeće softvere:
 
@@ -16,7 +16,37 @@ Proverite da imate sledecu konfiguraciju unutar application.properties:
 spring.datasource.url=jdbc:postgresql://172.21.0.2:5432/mydatabase
 ```
 
-Napomena 1: postgressql container mozda na vasoj masini nece biti pokrenut na adresi 172.21.0.2, proverite na kojoj
+#### Napomena 1:
+Kada zelite da napravite docker image za produkciju, potrebno je da gornju konfiguraciju promenite u sledecu:
+
+```
+spring.datasource.url=jdbc:postgresql://172.19.0.2:5432/mydatabase
+```
+
+### Početak rada
+
+1. Klonirajte repozitorijum:
+
+```
+git clone https://github.com/your/repo.git
+cd your-repo
+```
+
+2. Izgradite projekat i Docker kontejnere i pokrenite ih:
+
+```
+./gradlew bootJar   
+docker-compose build --no-cache
+docker-compose up --force-recreate
+```
+
+Docker compose ce automatski preuzeti i pokrenuti najnoviju verziju oficijalnog postgres kontejnera
+
+Sačekajte da se kontejneri pokrenu. Kada su spremni, API bi trebalo da bude dostupan na http://localhost:8091.
+
+#### Napomena 2:
+
+postgressql container mozda na vasoj masini nece biti pokrenut na adresi 172.21.0.2, proverite na kojoj
 adresi je pokrenut kontejner koristeci sledece komande nakon sto je kontejner pokrenut
 
 Da biste izlistali pokrenute kontejnere
@@ -44,34 +74,11 @@ Dodajte pronadjenu adresu u application.properties:
 spring.datasource.url=jdbc:postgresql://<IP ADRESA NA KOJOJ JE POKRENUT POSTGRESQL KONTEJNER>:5432/mydatabase
 ```
 
-Napomena 2: Kada zelite da napravite docker image za produkciju, potrebno je da gornju konfiguraciju promenite u sledecu:
+Nakon toga ponovite korak broj 2 iz uputstva "Izgradite projekat i Docker kontejnere i pokrenite ih" 
 
-```
-spring.datasource.url=jdbc:postgresql://172.19.0.2:5432/mydatabase
-```
 
-Početak rada
 
-1. Klonirajte repozitorijum:
-
-```
-git clone https://github.com/your/repo.git
-cd your-repo
-```
-
-2. Izgradite Docker kontejnere i pokrenite ih:
-
-```
-./gradlew bootJar   
-docker-compose build --no-cache
-docker-compose up --force-recreate
-```
-
-Docker compose ce automatski preuzeti i pokrenuti najnoviju verziju oficijalnog postgres kontejnera
-
-Sačekajte da se kontejneri pokrenu. Kada su spremni, API bi trebalo da bude dostupan na http://localhost:8091.
-
-API Endpoint-ovi
+### API Endpoint-ovi
 
 Dobavi Studente:\
 URL: http://localhost:8091/api/v1/students \
