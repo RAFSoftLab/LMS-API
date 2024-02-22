@@ -80,15 +80,37 @@ Nakon toga ponovite korak broj 2 iz uputstva "Izgradite projekat i Docker kontej
 
 ### API Endpoint-ovi
 
-Dobavi Studente:\
-URL: http://localhost:8091/api/v1/students \
-Metoda: GET
+#### Dobijanje svih studenata
 
-Kreiraj Studenta:\
-URL: http://localhost:8091/api/v1/students \
-Metoda: POST \
-Zahtevno telo:
+URL: /api/v1/students\
+Metoda: GET\
+Opis: Dobavlja listu svih studenata.\
+Odgovor: Lista objekata Student.\
 
+#### Autorizacija studenta
+
+URL: /api/v1/students/{id}/authorize\
+Metoda: POST\
+Opis: Autorizuje studenta za polaganje ispita.\
+Parametri:\
+{id}: ID studenta\
+Odgovor: JSON objekat koji sadrži informacije o autorizacionom tokenu.\
+
+#### Dobijanje studenta po ID-ju
+
+URL: /api/v1/students/{id}\
+Metoda: GET\
+Opis: Dobavlja informacije o studentu po ID-ju.\
+Parametri:\
+{id}: ID studenta\
+Odgovor: JSON objekat koji sadrži informacije o studentu.\
+
+#### Kreiranje studenta
+
+URL: /api/v1/students\
+Metoda: POST\
+Opis: Kreira novog studenta.\
+Telo zahteva: Objekat Student\
 ```
 {
     "firstName": "Foo",
@@ -100,50 +122,74 @@ Zahtevno telo:
     "studyProgram": "M"
 }
 ```
+Odgovor: JSON objekat koji sadrži informacije o kreiranom studentu.\
 
-Dobavi Studenta po ID-u: \
-URL: http://localhost:8091/api/v1/students/{id} \
-Metoda: GET
+#### Dobijanje repozitorijuma
 
-Obriši Studenta po ID-u: \
-URL: http://localhost:8091/api/v1/students/{id} \
-Metoda: DELETE
+URL: /api/v1/students/{id}/repository/{token}/exam/{exam}\
+Metoda: GET\
+Opis: Dobavlja repozitorijum za ispit za studenta.\
+Parametri:\
+{id}: ID studenta\
+{token}: Autorizacioni token\
+{exam}: Naziv ispita\
+Odgovor: JSON objekat koji sadrži informacije o repozitorijumu za ispit.\
 
-Studentov zadatak je kloniran: \
-URL: http://localhost:8091/api/v1/students/{id}/task_cloned \
-Metoda: POST \
-Zahtevno telo:
+#### Dobijanje naziva forka
 
+URL: /api/v1/students/{id}/repository/{token}/fork\
+Metoda: GET\
+Opis: Dobavlja naziva forka za repozitorijum studenta.\
+Parametri:\
+{id}: ID studenta\
+{token}: Autorizacioni token\
+Odgovor: JSON objekat koji sadrži ime forka.\
+
+#### Zadatak kloniran
+
+URL: /api/v1/students/{id}/task_cloned\
+Metoda: POST\
+Opis: Označava da je student klonirao zadatak ispita.\
+Parametri:\
+{id}: ID studenta\
+Telo zahteva: Objekat ExamInfo\
 ```
 {
     "taskGroup": "21",
     "classroom": "RAF10"
 }
 ```
+Odgovor: JSON objekat koji sadrži ažurirane informacije o studentu.\
 
-Studentov zadatak je predat:
+#### Zadatak predat
 
-URL: http://localhost:8091/api/v1/students/{id}/task_cloned
-Metoda: POST
-Zahtevno telo:
+URL: /api/v1/students/{id}/task_submitted\
+Metoda: POST\
+Opis: Označava da je student predao zadatak ispita.\
+Parametri:\
+{id}: ID studenta\
+Telo zahteva: Objekat TaskSubmissionInfo\
+Odgovor: JSON objekat koji sadrži ažurirane informacije o studentu.\
 
-```
-{
-    "taskGroup": "21",
-    "classroom": "RAF10"
-}
-```
+#### Brisanje studenta
 
-Otpremi Studente:\
-URL: http://localhost:8091/api/v1/students/upload \
-Metoda: POST \
-Zahtevno telo: CSV Fajl
+URL: /api/v1/students/{id}\
+Metoda: DELETE\
+Opis: Briše studenta po ID-ju.\
+Parametri:\
+{id}: ID studenta\
+Odgovor: Poruka o uspehu.\
+
+#### Upload studenata
+
+URL: /api/v1/students/upload\
+Metoda: POST\
+Opis: Uploaduje CSV fajl koji sadrži informacije o studentima.\
+Telo zahteva: CSV Fajl koji ukljucuje nazive kolona \
+Odgovor: Poruka o uspehu.\
 
 Postmen primer:
-
-
 ![image](https://github.com/RAFSoftLab/LMS-API/assets/43738975/51bfabbe-190f-43bd-8c10-f451135ee333)
-
 
 Model Studenta
 

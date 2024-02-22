@@ -70,7 +70,7 @@ public class StudentsController {
         repository.save(student);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
-                new Gson().toJson(mapStudentToDto(student))
+                new Gson().toJson(token)
         ));
     }
 
