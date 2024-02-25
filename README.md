@@ -76,6 +76,9 @@ spring.datasource.url=jdbc:postgresql://<IP ADRESA NA KOJOJ JE POKRENUT POSTGRES
 
 Nakon toga ponovite korak broj 2 iz uputstva "Izgradite projekat i Docker kontejnere i pokrenite ih" 
 
+### UML diagram
+
+![image](https://github.com/RAFSoftLab/LMS-API/assets/43738975/77a0ff99-9c5e-40a1-849f-8ec76545ce50)
 
 
 ### API Endpoint-ovi
