@@ -6,7 +6,7 @@ import com.raf.learning.authorisation.TokenManager;
 import com.raf.learning.dto.StudentInfoDto;
 import com.raf.learning.helpers.CSVHelper;
 import com.raf.learning.model.*;
-import com.raf.learning.repository.StudentSubmissionsRepository;
+import com.raf.learning.repository.StudentsSubmissionRepository;
 import com.raf.learning.repository.StudentsInfoRepository;
 import com.raf.learning.repository.TaskSubmissionsInfoRepository;
 import com.raf.learning.service.CSVService;
@@ -33,14 +33,14 @@ public class StudentsController {
     private final TokenManager tokenManager;
     private final GitRepositoriesService gitRepositoriesService;
     private final TaskSubmissionsInfoRepository taskSubmissionsInfoRepository;
-    private final StudentSubmissionsRepository studentSubmissionsRepository;
+    private final StudentsSubmissionRepository studentSubmissionsRepository;
 
     public StudentsController(StudentsInfoRepository repository,
                               CSVService fileService,
                               TokenManager tokenManager,
                               GitRepositoriesService gitRepositoriesService,
                               TaskSubmissionsInfoRepository taskSubmissionsInfoRepository,
-                              StudentSubmissionsRepository studentSubmissionsRepository) {
+                              StudentsSubmissionRepository studentSubmissionsRepository) {
         this.studentsInfoRepository = repository;
         this.fileService = fileService;
         this.tokenManager = tokenManager;

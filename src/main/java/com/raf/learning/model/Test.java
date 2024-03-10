@@ -1,9 +1,6 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.List;
 @Entity
 public class Test {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Timestamp testDate;
