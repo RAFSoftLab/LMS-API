@@ -3,7 +3,7 @@ package com.raf.learning.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-import java.time.LocalTime;
+import java.sql.Timestamp;
 
 
 @Entity
@@ -11,8 +11,8 @@ public class TestPeriod {
 
     @Id
     private Long id;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
 
     public Long getId() {
         return id;
@@ -22,19 +22,19 @@ public class TestPeriod {
         this.id = id;
     }
 
-    public LocalTime getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public LocalTime getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 }

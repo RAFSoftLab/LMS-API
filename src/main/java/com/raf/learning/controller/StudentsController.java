@@ -1,16 +1,18 @@
 package com.raf.learning.controller;
 
 import com.google.gson.Gson;
+import com.raf.learning.Application;
 import com.raf.learning.authorisation.TokenManager;
-import com.raf.learning.dto.StudentDto;
+import com.raf.learning.dto.StudentInfoDto;
 import com.raf.learning.helpers.CSVHelper;
-import com.raf.learning.model.ExamInfo;
-import com.raf.learning.model.ResponseMessage;
-import com.raf.learning.model.Student;
-import com.raf.learning.model.TaskSubmissionInfo;
-import com.raf.learning.repository.StudentRepository;
+import com.raf.learning.model.*;
+import com.raf.learning.repository.StudentSubmissionsRepository;
+import com.raf.learning.repository.StudentsInfoRepository;
+import com.raf.learning.repository.TaskSubmissionsInfoRepository;
 import com.raf.learning.service.CSVService;
 import com.raf.learning.service.GitRepositoriesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,29 +27,36 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/students")
 public class StudentsController {
-    private final StudentRepository repository;
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    private final StudentsInfoRepository studentsInfoRepository;
     private final CSVService fileService;
     private final TokenManager tokenManager;
     private final GitRepositoriesService gitRepositoriesService;
+    private final TaskSubmissionsInfoRepository taskSubmissionsInfoRepository;
+    private final StudentSubmissionsRepository studentSubmissionsRepository;
 
-    public StudentsController(StudentRepository repository,
+    public StudentsController(StudentsInfoRepository repository,
                               CSVService fileService,
                               TokenManager tokenManager,
-                              GitRepositoriesService gitRepositoriesService) {
-        this.repository = repository;
+                              GitRepositoriesService gitRepositoriesService,
+                              TaskSubmissionsInfoRepository taskSubmissionsInfoRepository,
+                              StudentSubmissionsRepository studentSubmissionsRepository) {
+        this.studentsInfoRepository = repository;
         this.fileService = fileService;
         this.tokenManager = tokenManager;
         this.gitRepositoriesService = gitRepositoriesService;
+        this.taskSubmissionsInfoRepository = taskSubmissionsInfoRepository;
+        this.studentSubmissionsRepository = studentSubmissionsRepository;
     }
 
     @GetMapping
-    public List<Student> getStudents(){
-        return repository.findAll();
+    public List<StudentInfo> getStudents(){
+        return studentsInfoRepository.findAll();
     }
 
     @PostMapping("/{id}/authorize")
     public ResponseEntity<ResponseMessage> authorizeStudent(@PathVariable String id) {
-        var result = repository.findById(id);
+        var result = studentsInfoRepository.findById(id);
 
         if (result.isEmpty()) {
             var message = String.format("Student with id: %s doesn't exist in the db", id);
@@ -64,10 +73,13 @@ public class StudentsController {
         var token = tokenManager.generateToken(id);
         student.setToken(token.getValue());
 
+        var taskSubmissionInfo = new TaskSubmissionInfo();
         var forkName = student.getId() + UUID.randomUUID().toString();
-        student.setForkName(forkName);
+        taskSubmissionInfo.setId(id);
+        taskSubmissionInfo.setForkName(forkName);
+        taskSubmissionsInfoRepository.save(taskSubmissionInfo);
 
-        repository.save(student);
+        studentsInfoRepository.save(student);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
                 new Gson().toJson(token)
@@ -76,7 +88,7 @@ public class StudentsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseMessage> getStudent(@PathVariable String id){
-        var result = repository.findById(id);
+        var result = studentsInfoRepository.findById(id);
 
         if (result.isEmpty()) {
             var message = String.format("Student with id: %s doesn't exist in the db", id);
@@ -90,14 +102,17 @@ public class StudentsController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> createStudent(@RequestBody Student newStudent) {
-        newStudent.setId(
-                newStudent.getStudyProgram()
+    public ResponseEntity<ResponseMessage> createStudent(@RequestBody StudentInfo newStudent) {
+        log.info("Create Student method entered");
+        newStudent.setId(newStudent.getStudyProgramShort()
                         +newStudent.getIndexNumber()
                         +newStudent.getStartYear());
-        var student = repository.save(newStudent);
+        log.info("Student id is: " + newStudent.getId());
+        var student = studentsInfoRepository.save(newStudent);
+        log.info("Student is saved in db");
+        log.info("Returning response");
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
-                new Gson().toJson(mapStudentToDto(student))
+               new Gson().toJson(student)
         ));
     }
 
@@ -123,9 +138,9 @@ public class StudentsController {
             var message = String.format("Invalid token: %s", token);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
         }
-        var result = repository.findById(id);
+        var result = taskSubmissionsInfoRepository.findById(id);
         if (result.isEmpty()) {
-            var message = String.format("Student with id: %s doesn't exist in the db", id);
+            var message = String.format("Fork for student with id: %s doesn't exist in the db", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
         }
 
@@ -134,54 +149,58 @@ public class StudentsController {
         ));
     }
 
-
     @PostMapping("/{id}/task_cloned")
     public ResponseEntity<ResponseMessage> taskIsCloned(@PathVariable String id, @RequestBody ExamInfo examInfo) {
-        var result = repository.findById(id);
+        var result = studentsInfoRepository.findById(id);
         if (result.isEmpty()){
             var message = String.format("Student with id: %s doesn't exist in the db", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
         }
         var dbStudent = result.get();
-        dbStudent.setTaskCloned(true);
+        var studentSubmission = new StudentSubmission();
+        studentSubmission.setId(dbStudent.getId());
+        studentSubmission.setCloned(true);
         var ldt = LocalDateTime.now(ZoneId.of("CET"));
-        dbStudent.setTaskClonedTime(Timestamp.valueOf(ldt));
-        dbStudent.setTaskGroup(examInfo.getTaskGroup());
-        dbStudent.setClassroom(examInfo.getClassroom());
-        var student = repository.save(dbStudent);
+        studentSubmission.setTaskClonedTime(Timestamp.valueOf(ldt));
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
-                new Gson().toJson(mapStudentToDto(student))
+                new Gson().toJson(studentSubmission)
         ));
     }
 
     @PostMapping("/{id}/task_submitted")
-    public ResponseEntity<ResponseMessage> taskIsSubmitted(@PathVariable String id, @RequestBody TaskSubmissionInfo taskSubmissionInfo) {
-        var result = repository.findById(id);
+    public ResponseEntity<ResponseMessage> taskIsSubmitted(
+            @PathVariable String id,
+            @RequestBody TaskSubmissionInfo taskSubmissionInfo) {
+        var result = studentsInfoRepository.findById(id);
         if (result.isEmpty()){
             var message = String.format("Student with id: %s doesn't exist in the db", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
         }
         var dbStudent = result.get();
-        dbStudent.setTaskSubmitted(true);
+        var studentSubmissionResult = studentSubmissionsRepository.findById(dbStudent.getId());
+        if (studentSubmissionResult.isEmpty()){
+            var message = String.format("Student with id: %s hasn't cloned the test, and can't submit it", id);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+        }
+        var studentSubmission = studentSubmissionResult.get();
+        studentSubmission.setTaskSubmitted(true);
         var ldt = LocalDateTime.now(ZoneId.of("CET"));
-        dbStudent.setTaskSubmittedTime(Timestamp.valueOf(ldt));
-        dbStudent.setForkName(taskSubmissionInfo.getForkName());
-
-        var student = repository.save(dbStudent);
+        studentSubmission.setTaskSubmittedTime(Timestamp.valueOf(ldt));
+        studentSubmissionsRepository.save(studentSubmission);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
-                new Gson().toJson(mapStudentToDto(student))
+                new Gson().toJson(studentSubmission)
         ));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessage> deleteStudent(@PathVariable String id){
-      if (repository.findById(id).isEmpty()){
+      if (studentsInfoRepository.findById(id).isEmpty()){
           var message = String.format("Student with id: %s doesn't exist in the db", id);
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
       }
-      repository.deleteById(id);
+      studentsInfoRepository.deleteById(id);
         var message = String.format("Student with id: %s has been successfully deleted", id);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
     }
@@ -206,20 +225,14 @@ public class StudentsController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
 
-    public StudentDto mapStudentToDto(Student student) {
-        return new StudentDto(
-                student.getId(),
+    public StudentInfoDto mapStudentToDto(StudentInfo student) {
+        return new StudentInfoDto(
                 student.getFirstName(),
                 student.getLastName(),
                 student.getIndexNumber(),
                 student.getStartYear(),
-                student.getStudiesGroup(),
-                student.getTaskGroup(),
-                student.isTaskCloned(),
-                student.getTaskClonedTime(),
-                student.isTaskSubmitted(),
-                student.getTaskSubmittedTime(),
-                student.getStudyProgram(),
-                student.getClassroom());
+                student.getStudyProgramShort()
+//                student.getAssignedTests()
+                );
     }
 }

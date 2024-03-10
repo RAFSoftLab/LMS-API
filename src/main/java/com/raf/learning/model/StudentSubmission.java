@@ -4,11 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+import java.sql.Timestamp;
+
 @Entity
 public class StudentSubmission {
-
     @Id
-    private Long id;
+    private String id;
 
     @ManyToOne
     private StudentInfo student;
@@ -20,11 +21,16 @@ public class StudentSubmission {
 
     private boolean cloned;
 
-    public Long getId() {
+    private Timestamp taskClonedTime;
+
+    private boolean taskSubmitted;
+    private Timestamp taskSubmittedTime;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -51,5 +57,37 @@ public class StudentSubmission {
 
     public void setForkPath(String forkPath) {
         this.forkPath = forkPath;
+    }
+
+    public boolean isCloned() {
+        return cloned;
+    }
+
+    public void setCloned(boolean cloned) {
+        this.cloned = cloned;
+    }
+
+    public Timestamp getTaskClonedTime() {
+        return taskClonedTime;
+    }
+
+    public void setTaskClonedTime(Timestamp taskClonedTime) {
+        this.taskClonedTime = taskClonedTime;
+    }
+
+    public boolean isTaskSubmitted() {
+        return taskSubmitted;
+    }
+
+    public void setTaskSubmitted(boolean taskSubmitted) {
+        this.taskSubmitted = taskSubmitted;
+    }
+
+    public Timestamp getTaskSubmittedTime() {
+        return taskSubmittedTime;
+    }
+
+    public void setTaskSubmittedTime(Timestamp taskSubmittedTime) {
+        this.taskSubmittedTime = taskSubmittedTime;
     }
 }

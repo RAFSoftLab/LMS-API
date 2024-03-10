@@ -1,8 +1,11 @@
 package com.raf.learning.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -10,7 +13,7 @@ public class Test {
     @Id
     private Long id;
 
-    private LocalDate testDate;
+    private Timestamp testDate;
 
     @OneToMany
     private List<Assignment> assignments;
@@ -24,8 +27,8 @@ public class Test {
 
     // dodati entitet profesor
 
-    @ManyToMany
-    private List<StudentInfo> studentsAssigned;
+//    @ManyToMany
+    private List<String> studentsAssigned;
 
     public Long getId() {
         return id;
@@ -36,11 +39,11 @@ public class Test {
     }
 
 
-    public LocalDate getTestDate() {
+    public Timestamp getTestDate() {
         return testDate;
     }
 
-    public void setTestDate(LocalDate testDate) {
+    public void setTestDate(Timestamp testDate) {
         this.testDate = testDate;
     }
 

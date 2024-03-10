@@ -2,13 +2,12 @@ package com.raf.learning.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
 @Entity
 public class StudentInfo {
-
     @Id
     private String id;
     private String firstName;
@@ -16,8 +15,11 @@ public class StudentInfo {
     private Integer indexNumber;
     private String startYear;
     private String studyProgramShort; // RN, RI - iz indeksa
-    @ManyToMany
+//    @ManyToMany
+    @OneToMany
     private List<Test> assignedTests;
+
+    private String token;
 
     public String getId() {
         return id;
@@ -65,5 +67,21 @@ public class StudentInfo {
 
     public void setStudyProgramShort(String studyProgramShort) {
         this.studyProgramShort = studyProgramShort;
+    }
+
+//    public List<Test> getAssignedTests() {
+//        return assignedTests;
+//    }
+//
+//    public void setAssignedTests(List<Test> assignedTests) {
+//        this.assignedTests = assignedTests;
+//    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
