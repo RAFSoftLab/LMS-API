@@ -22,7 +22,6 @@ public class Student {
     private String studyProgram;
     private String classroom;
     private String forkName;
-
     private String token;
 
     public Student() {

@@ -17,8 +17,8 @@ public class Assignment {
 
     private String gitRepoPath; // treba u nekom conf fajlu (application properties mozda) da se zapise root git folder a ovde relativna putanja
 
-    @ManyToOne
-    private Test test;
+//    @ManyToOne
+//    private Test test;
 
     private int maxPoints;
 
@@ -62,11 +62,11 @@ public class Assignment {
         this.maxPoints = maxPoints;
     }
 
-    public Test getTest() {
-        return test;
-    }
-
-    public void setTest(Test test) {
-        this.test = test;
-    }
+//    public Test getTest() {
+//        return test;
+//    }
+//
+//    public void setTest(Test test) {
+//        this.test = test;
+//    }
 }

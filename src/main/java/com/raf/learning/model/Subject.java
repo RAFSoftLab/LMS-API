@@ -23,8 +23,6 @@ public class Subject {
         this.id = id;
     }
 
-
-
     public String getFullName() {
         return fullName;
     }
