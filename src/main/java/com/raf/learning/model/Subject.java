@@ -14,7 +14,7 @@ public class Subject {
     private String shortName; // OOP
 
     private String schoolYear; // Example: "2023/2024"
-    
+
     // TODO dodati ESPB, nastavnike, asistente, studente, ali vezano za skolsku godinu...
 
     public Long getId() {

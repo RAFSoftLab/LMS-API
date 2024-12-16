@@ -87,18 +87,18 @@ public class StudentsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseMessage> getStudent(@PathVariable String id){
+    public ResponseEntity<String> getStudent(@PathVariable String id){
         var result = studentsInfoRepository.findById(id);
 
         if (result.isEmpty()) {
             var message = String.format("Student with id: %s doesn't exist in the db", id);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
 
         var student = result.get();
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 new Gson().toJson(mapStudentToDto(student))
-        ));
+        );
     }
 
     @PostMapping
@@ -108,7 +108,7 @@ public class StudentsController {
                         +newStudent.getIndexNumber()
                         +newStudent.getStartYear());
         log.info("Student id is: " + newStudent.getId());
-        var student = studentsInfoRepository.save(newStudent);
+        StudentInfo student = studentsInfoRepository.save(newStudent);
         log.info("Student is saved in db");
         log.info("Returning response");
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(
@@ -132,7 +132,7 @@ public class StudentsController {
 
     @GetMapping("/{id}/repository/{token}/fork")
     public ResponseEntity<ResponseMessage> getFork(@PathVariable String id,
-                                                     @PathVariable String token) {
+                                                   @PathVariable String token) {
         var tokenIsValid = tokenManager.verifyToken(id, token);
         if (!tokenIsValid) {
             var message = String.format("Invalid token: %s", token);
@@ -231,8 +231,6 @@ public class StudentsController {
                 student.getLastName(),
                 student.getIndexNumber(),
                 student.getStartYear(),
-                student.getStudyProgramShort()
-//                student.getAssignedTests()
-                );
+                student.getStudyProgramShort());
     }
 }
