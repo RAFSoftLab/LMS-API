@@ -41,19 +41,23 @@ public class DirectoryController {
 
         try {
             // Build platform-agnostic path using Paths.get
-            Path directoryPath = Paths.get(
+            Path baseDirectoryPath = Paths.get(
                     "/srv/git",
                     request.getSubject().replace("/", "_"), // Sanitize forward slashes
                     request.getYear().replace("/", "_"),    // Replace invalid chars
                     request.getTestType().replace("/", "_")
             ).toAbsolutePath();
 
-            directoryService.createDirectory(directoryPath.toString());
+            // Add the hardcoded subdirectory to the base directory
+            Path fullDirectoryPath = baseDirectoryPath.resolve("Studentska_resenja");
+
+            directoryService.createDirectory(fullDirectoryPath.toString());
 
             // Return structured JSON response
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");
-            response.put("path", directoryPath.toString());
+            response.put("basePath", baseDirectoryPath.toString());
+            response.put("fullPath", fullDirectoryPath.toString());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
