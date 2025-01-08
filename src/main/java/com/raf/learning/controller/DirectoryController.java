@@ -1,7 +1,11 @@
 package com.raf.learning.controller;
 
+import com.raf.learning.Config;
 import com.raf.learning.model.CreateDirectoryRequest;
+import com.raf.learning.model.SetupPermissionsRequest;
 import com.raf.learning.service.LocalDirectoryService;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -27,14 +33,23 @@ public class DirectoryController {
     }
 
     /**
-     * Creates a directory based on the input provided in the request.
-     * The directory structure will follow: "C:\Projects\<subject>\<year>\<testType>"
+     * Creates a directory based on the input provided in the request and initializes it as a Git repository.
+     * The directory structure will follow: "/srv/git/<subject>/<year>/<testType>/<group>/Studentska_resenja".
+     * The created directory will be set up as a Git repository, allowing files to be pushed to it remotely.
      *
-     * @param request The request object containing subject, year, and testType.
-     *                - subject: The subject name or identifier (String).
+     * @param request The request object containing the following fields:
+     *                - subject: The subject name or identifier (String, e.g., "Math").
      *                - year: The year for which the directory is being created (String, e.g., "2024").
      *                - testType: The type of test (String, e.g., "Midterm" or "Final").
-     * @return A ResponseEntity containing the path of the created directory or an error message.
+     *                - group: The group name or identifier (String, e.g., "Group_A").
+     * @return A ResponseEntity containing:
+     *         - "status": The status of the operation ("success" or "failure").
+     *         - "basePath": The absolute path of the created base directory.
+     *         - "fullPath": The absolute path of the created directory, including the "Studentska_resenja" subdirectory.
+     *         - "gitInitialized": A boolean value ("true") indicating whether the Git repository was successfully initialized.
+     *         - In case of failure, an "error" field containing the error message.
+     *
+     * @throws IOException If an error occurs during directory creation, Git initialization, or permission setup.
      */
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createDirectory(@RequestBody CreateDirectoryRequest request) {
@@ -45,19 +60,47 @@ public class DirectoryController {
                     "/srv/git",
                     request.getSubject().replace("/", "_"), // Sanitize forward slashes
                     request.getYear().replace("/", "_"),    // Replace invalid chars
-                    request.getTestType().replace("/", "_")
+                    request.getTestType().replace("/", "_"),
+                    request.getGroup().replace("/", "_")
             ).toAbsolutePath();
 
             // Add the hardcoded subdirectory to the base directory
             Path fullDirectoryPath = baseDirectoryPath.resolve("Studentska_resenja");
 
-            directoryService.createDirectory(fullDirectoryPath.toString());
+//            directoryService.createDirectory(fullDirectoryPath.toString());
+
+            System.out.println("Attempting to Initialize Git repository at: " + baseDirectoryPath);
+            // Initialize Git repository
+            try {
+                // Initialize as bare repository
+                Git.init()
+                        .setBare(true)
+                        .setDirectory(baseDirectoryPath.toFile())
+                        .call();
+
+                // Create Studentska_resenja after git init
+                directoryService.createDirectory(fullDirectoryPath.toString());
+
+                // Verify directory exists before running commands
+                if (!baseDirectoryPath.toFile().exists()) {
+                    throw new IOException("Base directory was not created properly at: " + baseDirectoryPath);
+                }
+
+                System.out.println("Successfully initialized Git repository at: " + baseDirectoryPath);
+
+            } catch (GitAPIException e) {
+                throw new IOException("Failed to initialize Git repository: " + e.getMessage(), e);
+            }
+            SetupPermissionsRequest setupPermissionsRequest = new SetupPermissionsRequest();
+            setupPermissionsRequest.setRepoPath(baseDirectoryPath.toString());
+            setupPermissions(setupPermissionsRequest);
 
             // Return structured JSON response
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");
             response.put("basePath", baseDirectoryPath.toString());
             response.put("fullPath", fullDirectoryPath.toString());
+            response.put("gitInitialized", "true");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -67,6 +110,41 @@ public class DirectoryController {
             errorResponse.put("error", e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/setup-permissions")
+    public ResponseEntity<Map<String, String>> setupPermissions(@RequestBody SetupPermissionsRequest request) {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(
+                    "sudo",
+                    Config.GIT_PERMISSIONS_SCRIPT_PATH,
+                    request.getRepoPath());
+
+            Process process = pb.start();
+
+            // Capture error output for debugging
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            StringBuilder error = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                error.append(line).append("\n");
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                return ResponseEntity.ok(Map.of("status", "success"));
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of(
+                                "status", "failure",
+                                "error", "Script failed with exit code: " + exitCode + "\nError: " + error.toString()
+                        ));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "failure", "error", e.getMessage()));
         }
     }
 }

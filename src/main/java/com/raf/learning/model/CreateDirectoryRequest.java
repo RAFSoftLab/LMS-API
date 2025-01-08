@@ -5,6 +5,8 @@ public class CreateDirectoryRequest {
     private String year;
     private String testType;
 
+    private String group;
+
     public String getSubject() {
         return subject;
     }
@@ -27,5 +29,13 @@ public class CreateDirectoryRequest {
 
     public void setTestType(String testType) {
         this.testType = testType;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }

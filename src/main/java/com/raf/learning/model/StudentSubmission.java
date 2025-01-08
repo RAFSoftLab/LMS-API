@@ -19,6 +19,8 @@ public class StudentSubmission {
 
     private String forkPath; // mora da se napravi pre clone-a, moze i profesor
 
+    private String studentGroup;
+
     private boolean cloned;
 
     private Timestamp taskClonedTime;
