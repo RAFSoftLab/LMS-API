@@ -1,9 +1,12 @@
 package com.raf.learning.controller;
 
 import com.raf.learning.Config;
-import com.raf.learning.model.CreateDirectoryRequest;
-import com.raf.learning.model.SetupPermissionsRequest;
+import com.raf.learning.model.*;
+import com.raf.learning.repository.SubjectsRepository;
+import com.raf.learning.repository.TestGroupRepository;
+import com.raf.learning.repository.TestTypeRepository;
 import com.raf.learning.service.LocalDirectoryService;
+import jakarta.persistence.EntityNotFoundException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,16 @@ import java.util.Map;
 @RequestMapping("/api/v1/directories")
 public class DirectoryController {
     private final LocalDirectoryService directoryService;
+    private final SubjectsRepository subjectsRepository;
+    private final TestTypeRepository testTypeRepository;
+    private final TestGroupRepository testGroupRepository;
 
     @Autowired
-    public DirectoryController(LocalDirectoryService directoryService) {
+    public DirectoryController(LocalDirectoryService directoryService, SubjectsRepository subjectsRepository, TestTypeRepository testTypeRepository, TestGroupRepository testGroupRepository) {
         this.directoryService = directoryService;
+        this.subjectsRepository = subjectsRepository;
+        this.testTypeRepository = testTypeRepository;
+        this.testGroupRepository = testGroupRepository;
     }
 
     /**
@@ -67,7 +76,7 @@ public class DirectoryController {
             // Add the hardcoded subdirectory to the base directory
             Path fullDirectoryPath = baseDirectoryPath.resolve("Studentska_resenja");
 
-//            directoryService.createDirectory(fullDirectoryPath.toString());
+            directoryService.createDirectory(fullDirectoryPath.toString());
 
             System.out.println("Attempting to Initialize Git repository at: " + baseDirectoryPath);
             // Initialize Git repository
@@ -94,6 +103,23 @@ public class DirectoryController {
             SetupPermissionsRequest setupPermissionsRequest = new SetupPermissionsRequest();
             setupPermissionsRequest.setRepoPath(baseDirectoryPath.toString());
             setupPermissions(setupPermissionsRequest);
+
+            // Save the information to database
+            Subject subject = subjectsRepository.findByShortName(request.getSubject())
+                    .orElseThrow(() -> new EntityNotFoundException("Subject not found"));
+
+            TestType testType = new TestType();
+            testType.setName(request.getTestType());
+            testType.setSubjectId(subject.getId());  // Set subject ID instead of Subject object
+            testType.setSchoolYear(request.getYear());
+            testType = testTypeRepository.save(testType);
+
+            TestGroup testGroup = new TestGroup();
+            testGroup.setGroupNumber(request.getGroup());
+            testGroup.setTestTypeId(testType.getId());  // Set test type ID instead of TestType object
+            testGroup.setGitPath(baseDirectoryPath.toString());
+            testGroupRepository.save(testGroup);
+
 
             // Return structured JSON response
             Map<String, String> response = new HashMap<>();

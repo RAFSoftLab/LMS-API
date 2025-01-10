@@ -22,7 +22,7 @@ cd your-repo
 2. Izgradite projekat i Docker kontejnere i pokrenite ih:
 
 ```
-./gradlew bootJar   
+./gradlew bootJar
 docker-compose build --no-cache
 docker-compose up --force-recreate
 ```
@@ -68,6 +68,7 @@ URL: /api/v1/students\
 Metoda: POST\
 Opis: Kreira novog studenta.\
 Telo zahteva: Objekat Student\
+
 ```
 {
     "firstName": "Foo",
@@ -79,6 +80,7 @@ Telo zahteva: Objekat Student\
     "studyProgram": "M"
 }
 ```
+
 Odgovor: JSON objekat koji sadrži informacije o kreiranom studentu.\
 
 #### Dobijanje repozitorijuma
@@ -110,12 +112,14 @@ Opis: Označava da je student klonirao zadatak ispita.\
 Parametri:\
 {id}: ID studenta\
 Telo zahteva: Objekat ExamInfo\
+
 ```
 {
     "taskGroup": "21",
     "classroom": "RAF10"
 }
 ```
+
 Odgovor: JSON objekat koji sadrži ažurirane informacije o studentu.\
 
 #### Zadatak predat
@@ -171,4 +175,112 @@ Model Studenta
 }
 ```
 
+# Sistem za Upravljanje Testovima i Ispitima
+
+## Struktura Podataka i Repozitorijuma
+### Hijerarhijska Organizacija
+RAF-LMS organizuje testove i ispite u hijerarhijskoj strukturi:
+1. Predmet (Subject)
+    - Naziv predmeta (npr. "OOP")
+    - Puno ime predmeta (npr. "Objektno Orijentisano Programiranje")
+2. Školska godina (School Year)
+    - Format: "YYYY_YY" (npr. "2024_25")
+3. Tip testa (Test Type)
+    - Identifikacija testa (npr. "Prvi_kolokvijum", "Drugi_kolokvijum")
+4. Grupa (Group)
+    - Broj grupe (npr. "1", "2")
+    - Git putanja do repozitorijuma
+
+### Baza Podataka
+Sistem koristi relacionu bazu podataka sa sledećim entitetima:
+
+1. `Subject`:
+    - `id`: Jedinstveni identifikator
+    - `fullName`: Puno ime predmeta
+    - `shortName`: Skraćeno ime predmeta
+
+2. `TestType`:
+    - `id`: Jedinstveni identifikator
+    - `name`: Naziv tipa testa
+    - `schoolYear`: Školska godina
+    - `subjectId`: Referenca na predmet
+
+3. `TestGroup`:
+    - `id`: Jedinstveni identifikator
+    - `groupNumber`: Broj grupe
+    - `testTypeId`: Referenca na tip testa
+    - `gitPath`: Putanja do Git repozitorijuma
+
+## REST API Endpointi
+
+### Pregled Strukture
+RAF-LMS pruža sledeće REST endpointe za upravljanje testovima:
+
+1. Pregled Predmeta:
+```http
+GET /api/v1/profesor/tests/subjects
+```
+Vraća listu svih dostupnih predmeta
+
+2. Pregled Školskih Godina za Predmet:
+```http
+GET /api/v1/profesor/tests/subjects/{subject}/years
+```
+Vraća listu školskih godina za određeni predmet
+
+3. Pregled Tipova Testova:
+```http
+GET /api/v1/profesor/tests/subjects/{subject}/years/{year}/types
+```
+Vraća listu tipova testova za određenu godinu i predmet
+
+4. Pregled Grupa:
+```http
+GET /api/v1/profesor/tests/subjects/{subject}/years/{year}/types/{type}/groups
+```
+Vraća listu grupa za određeni tip testa
+
+Kreiranje Novog Testa
+Za kreiranje novog testa koristi se:
+```http
+POST /api/v1/directories/create
+```
+Telo zahteva (JSON):
+```json
+{
+  "subject": "OOP",
+  "year": "2024_25",
+  "testType": "Prvi_kolokvijum",
+  "group": "1"
+}
+```
+
+### Primeri Korišćenja
+
+1. Pregled Strukture Predmeta
+```bash
+# Dobavljanje svih predmeta
+curl http://server:8091/api/v1/profesor/tests/subjects
+
+# Dobavljanje godina za OOP
+curl http://server:8091/api/v1/profesor/tests/subjects/OOP/years
+
+# Dobavljanje tipova testova
+curl http://server:8091/api/v1/profesor/tests/subjects/OOP/years/2024_25/types
+```
+
+2. Kreiranje Novog Testa
+```bash
+curl -X POST http://server:8091/api/v1/directories/create \
+-H "Content-Type: application/json" \
+-d '{
+    "subject": "OOP",
+    "year": "2024_25",
+    "testType": "Prvi_kolokvijum",
+    "group": "1"
+}'
+```
+
 Slobodno istražujte API i modifikujte ga prema svojim potrebama. Ako naiđete na bilo kakve probleme ili imate sugestije, molimo vas da doprinesete projektu otvaranjem pitanja ili slanjem zahteva za izmenama (pull request).
+
+{"message":"{\"id\":\"M312023\",\"value\":\"f266c9a9-d9fd-4c21-b602-2674cc4cddd7\"}"}
