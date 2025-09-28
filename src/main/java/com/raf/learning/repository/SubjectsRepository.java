@@ -13,4 +13,10 @@ public interface SubjectsRepository extends ListCrudRepository<Subject, Long> {
     List<String> findAllShortNames();
 
     Optional<Subject> findByShortName(String shortName);
+
+    // Get subjects that actually have test groups (for student browsing)
+    @Query("SELECT DISTINCT s FROM Subject s WHERE s.id IN " +
+            "(SELECT DISTINCT t.subjectId FROM TestType t WHERE t.id IN " +
+            "(SELECT DISTINCT g.testTypeId FROM TestGroup g))")
+    List<Subject> findSubjectsWithAvailableTests();
 }
